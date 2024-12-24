@@ -2,8 +2,12 @@ import os
 from PIL import Image
 import numpy as np
 from ultralytics import YOLO
-from convert import convert_to_braille_unicode, parse_xywh_and_class
+# from convert import convert_to_braille_unicode, parse_xywh_and_class
 from texttospeech import TextToSpeech
+from braille_detection_utils import BrailleUtils
+
+braille_utils = BrailleUtils("braille_map.json")
+
 
 class BrailleDetection:
     """
@@ -70,7 +74,7 @@ class BrailleDetection:
             return "", ""
 
         boxes = results[0].boxes  # Assuming predictions for a single image
-        list_boxes = parse_xywh_and_class(boxes)
+        list_boxes = braille_utils.parse_xywh_and_class(boxes)
 
         detected_classes = ""
         braille_representation = ""
@@ -81,7 +85,7 @@ class BrailleDetection:
             for each_class in box_classes:
                 class_name = self.model.names[int(each_class)]  # Retrieve class name
                 detected_classes += class_name
-                braille_line += convert_to_braille_unicode(class_name)  # Convert class name to Braille Unicode
+                braille_line += braille_utils.convert_to_braille_unicode(class_name)# Convert class name to Braille Unicode
 
             braille_representation += braille_line + "\n"
 
@@ -111,7 +115,7 @@ if __name__ == "__main__":
     MODEL_PATH = "weights/Braille_Yolov11.pt"
     
     # Path to the image to process (test with an incorrect path to trigger the error handling)
-    IMAGE_PATH = r"C:\Users\rajpu\Desktop\VIJAY\Projects\hhh\DataSet\000001.jpg"
+    IMAGE_PATH = r"C:\Users\rajpu\Desktop\VIJAY\Projects\hhh\DataSet\0000014.jpg"
 
     # Initialize the BrailleDetection class
     braille_detector = BrailleDetection(model_path=MODEL_PATH, confidence_threshold=0.5)
@@ -126,6 +130,7 @@ if __name__ == "__main__":
 
         # Print the output
         print(f"Detected Classes: {detected_classes}")
+        print(f"Braille Output: {braille_output}")
         tts.speak(detected_classes)
     else:
         print(f"Failed to process the image at '{IMAGE_PATH}'. Please check the file path and try again.")
