@@ -10,7 +10,7 @@ from ultralytics import YOLO
 from texttospeech import TextToSpeech
 from braille_detection_utils import BrailleUtils
 from braille_detection import BrailleDetection  # Assuming your class is in braille_detection.py
-from paddleaa import extract_filtered_alpha_words
+from paddle_ocr_reader import extract_filtered_alpha_words
 
 
 # Constants
